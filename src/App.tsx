@@ -17,6 +17,7 @@ import CryptoView from '@/views/CryptoView';
 import CopyTradingView from '@/views/CopyTradingView';
 import TradeHistoryView from '@/views/TradeHistoryView';
 import WalletView from '@/views/WalletView';
+import MySubscriptionView from '@/views/MySubscriptionView';
 import ConnectBrokerView from '@/views/ConnectBrokerView';
 import BrokerResponseView from '@/views/BrokerResponseView';
 import TutorialsView from '@/views/TutorialsView';
@@ -37,6 +38,7 @@ const viewTitles: Record<ViewId, string> = {
   'copy-trading': 'Copy Trading Marketplace',
   'trade-history': 'Trade History',
   'wallet': 'Wallet & Calculation',
+  'my-subscription': 'My Subscription',
   'connect-broker': 'Connect Your Broker',
   'broker-response': 'Broker Response',
   'tutorials': 'Tutorials & Guides',
@@ -63,6 +65,7 @@ function AppContent() {
       case 'copy-trading': return <CopyTradingView />;
       case 'trade-history': return <TradeHistoryView />;
       case 'wallet': return <WalletView />;
+      case 'my-subscription': return <MySubscriptionView />;
       case 'connect-broker': return <ConnectBrokerView />;
       case 'broker-response': return <BrokerResponseView />;
       case 'tutorials': return <TutorialsView />;

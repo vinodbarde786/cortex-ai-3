@@ -1,13 +1,13 @@
 import {
   LayoutDashboard, Bot, Activity, Radio, Bitcoin,
   History, Wallet, Plug, Server, BookOpen,
-  HelpCircle, LifeBuoy, Bug, ChevronRight, ShieldCheck, Copy,
+  HelpCircle, LifeBuoy, Bug, ChevronRight, ShieldCheck, Copy, KeyRound,
 } from 'lucide-react';
 
 export type ViewId =
   | 'dashboard' | 'ai-smart-bot' | 'trading-status' | 'signals' | 'crypto'
   | 'copy-trading' | 'trade-history' | 'wallet' | 'connect-broker' | 'broker-response'
-  | 'tutorials' | 'faq' | 'help-center' | 'report-bug';
+  | 'my-subscription' | 'tutorials' | 'faq' | 'help-center' | 'report-bug';
 
 interface NavItem {
   id: ViewId;
@@ -38,6 +38,7 @@ const groups: NavGroup[] = [
     items: [
       { id: 'trade-history', label: 'Trade History', icon: History },
       { id: 'wallet', label: 'Wallet & Calculation', icon: Wallet },
+      { id: 'my-subscription', label: 'My Subscription', icon: KeyRound, badge: 'NEW' },
     ],
   },
   {
