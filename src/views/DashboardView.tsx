@@ -42,67 +42,123 @@ export default function DashboardView() {
         <StatCard label="Win Rate" value={`${winRate}%`} icon={Target} accent="green" sub={`${winCount} wins`} />
       </div>
 
-      {/* AI Market Sentiment Widget */}
-      <div className="glass-card p-5 sm:p-6 relative overflow-hidden">
-        <div className="absolute -top-20 -right-20 w-60 h-60 bg-neon-green/5 rounded-full blur-3xl" />
-        <div className="relative flex flex-col lg:flex-row lg:items-center justify-between gap-5">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-neon-green/10 border border-neon-green/30 flex items-center justify-center neon-glow-green flex-shrink-0">
-              <Brain className="w-7 h-7 text-neon-green animate-pulse-glow" />
+      {/* AI Market Sentiment & Fear/Greed Meter */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        {/* Fear & Greed Gauge — 1 col */}
+        <div className="glass-card p-5 sm:p-6 relative overflow-hidden">
+          <div className="absolute -top-16 -right-16 w-48 h-48 bg-neon-green/5 rounded-full blur-3xl" />
+          <div className="relative">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-neon-green opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-neon-green" />
+              </span>
+              <h2 className="text-xs font-bold text-white tracking-wide">FEAR & GREED METER</h2>
             </div>
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-neon-green opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-neon-green" />
-                </span>
-                <h2 className="text-sm font-bold text-white tracking-wide">LIVE AI MARKET SENTIMENT</h2>
+            <p className="text-[10px] text-slate-500 mb-4">Cortex Neural Engine v3 · Live</p>
+
+            {/* Semicircular Gauge */}
+            <div className="flex flex-col items-center">
+              <div className="relative w-[200px] h-[110px]">
+                <svg width="200" height="110" viewBox="0 0 200 110" className="overflow-visible">
+                  {/* Background arc */}
+                  <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#141828" strokeWidth="14" strokeLinecap="round" />
+                  {/* Colored segments */}
+                  <path d="M 20 100 A 80 80 0 0 1 53 36" fill="none" stroke="#ff3b5c" strokeWidth="14" strokeLinecap="round" opacity="0.7" />
+                  <path d="M 53 36 A 80 80 0 0 1 100 20" fill="none" stroke="#ffb020" strokeWidth="14" strokeLinecap="round" opacity="0.7" />
+                  <path d="M 100 20 A 80 80 0 0 1 147 36" fill="none" stroke="#00e5ff" strokeWidth="14" strokeLinecap="round" opacity="0.7" />
+                  <path d="M 147 36 A 80 80 0 0 1 180 100" fill="none" stroke="#00ff9d" strokeWidth="14" strokeLinecap="round" opacity="0.7" />
+                  {/* Active arc up to 72 */}
+                  <path d="M 20 100 A 80 80 0 0 1 137 27" fill="none" stroke="#00ff9d" strokeWidth="14" strokeLinecap="round" style={{ filter: 'drop-shadow(0 0 8px rgba(0, 255, 157, 0.6))' }} />
+                  {/* Needle */}
+                  <line
+                    x1="100" y1="100"
+                    x2={100 + 78 * Math.cos(Math.PI * (1 - 72 / 100))}
+                    y2={100 - 78 * Math.sin(Math.PI * (1 - 72 / 100))}
+                    stroke="#00ff9d" strokeWidth="2.5" strokeLinecap="round"
+                    style={{ filter: 'drop-shadow(0 0 6px rgba(0, 255, 157, 0.8))' }}
+                  />
+                  <circle cx="100" cy="100" r="6" fill="#0b0e18" stroke="#00ff9d" strokeWidth="2" style={{ filter: 'drop-shadow(0 0 4px rgba(0, 255, 157, 0.6))' }} />
+                </svg>
               </div>
-              <p className="text-2xl sm:text-3xl font-bold">
-                <span className="text-neon-green neon-text-green animate-pulse-glow">AI Prediction: 78% Bullish on BTC</span>
-              </p>
-              <p className="text-xs text-slate-400 mt-1">Cortex Neural Engine v3 · Analyzing 1,247 data sources · Updated 8s ago</p>
+              <div className="text-center -mt-2">
+                <p className="text-3xl font-bold text-neon-green neon-text-green font-mono">72</p>
+                <p className="text-sm font-bold text-neon-green">Greed</p>
+              </div>
+            </div>
+
+            {/* Labels */}
+            <div className="flex justify-between mt-3 text-[9px] text-slate-600">
+              <span className="text-neon-red">Extreme Fear</span>
+              <span className="text-neon-amber">Fear</span>
+              <span className="text-neon-cyan">Neutral</span>
+              <span className="text-neon-green font-bold">Greed</span>
             </div>
           </div>
         </div>
 
-        {/* Sentiment Progress Bar */}
-        <div className="relative mt-5">
-          <div className="flex justify-between text-[10px] text-slate-500 mb-1.5">
-            <span>Bearish</span>
-            <span>Neutral</span>
-            <span className="text-neon-green font-semibold">Bullish 78%</span>
-          </div>
-          <div className="h-3 rounded-full bg-base-700 overflow-hidden relative">
-            <div
-              className="h-full rounded-full bg-gradient-to-r from-neon-red via-neon-amber to-neon-green transition-all duration-1000 relative"
-              style={{ width: '78%' }}
-            >
-              <div className="absolute inset-0 rounded-full" style={{ boxShadow: '0 0 20px rgba(0, 255, 157, 0.5)' }} />
-              <div className="absolute right-0 top-0 h-full w-8 bg-gradient-to-l from-white/30 to-transparent" />
+        {/* AI Market Summary — 2 cols */}
+        <div className="glass-card p-5 sm:p-6 relative overflow-hidden lg:col-span-2">
+          <div className="absolute -top-20 -right-20 w-60 h-60 bg-neon-cyan/5 rounded-full blur-3xl" />
+          <div className="relative">
+            <div className="flex items-center gap-2 mb-1">
+              <Brain className="w-4 h-4 text-neon-cyan animate-pulse-glow" />
+              <h2 className="text-xs font-bold text-white tracking-wide">LIVE AI MARKET ANALYSIS</h2>
+              <span className="ml-auto text-[10px] text-slate-500">Updated 8s ago</span>
             </div>
-          </div>
-          {/* Markers */}
-          <div className="flex justify-between mt-1 text-[10px] text-slate-600">
-            <span>0%</span>
-            <span>50%</span>
-            <span>100%</span>
-          </div>
-        </div>
 
-        {/* Sub-sentiment chips */}
-        <div className="flex flex-wrap gap-2 mt-4">
-          {[
-            { label: 'Fear & Greed', value: '72 — Greed', color: 'green' },
-            { label: 'Social Buzz', value: '+18% BTC', color: 'cyan' },
-            { label: 'On-Chain Flow', value: 'Net Inflow', color: 'green' },
-            { label: 'Volatility', value: 'Moderate', color: 'amber' },
-          ].map((chip) => (
-            <div key={chip.label} className={`px-3 py-1.5 rounded-lg text-xs ${accentMap[chip.color as keyof typeof accentMap].bg} ${accentMap[chip.color as keyof typeof accentMap].border} border`}>
-              <span className="text-slate-400">{chip.label}: </span>
-              <span className={accentMap[chip.color as keyof typeof accentMap].text + ' font-semibold'}>{chip.value}</span>
+            <p className="text-lg sm:text-xl font-bold text-white mt-3 mb-3 leading-snug">
+              <span className="text-neon-green neon-text-green">AI detects high volatility. Smart Money is accumulating BTC.</span>
+            </p>
+
+            {/* AI-generated summary */}
+            <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.05] mb-4">
+              <div className="flex items-start gap-2.5">
+                <Brain className="w-4 h-4 text-neon-cyan flex-shrink-0 mt-0.5 animate-pulse-glow" />
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  On-chain data shows <span className="text-neon-green font-semibold">net BTC inflows</span> into cold storage across major exchanges. Social sentiment is <span className="text-neon-green font-semibold">+18% bullish</span> on BTC and ETH. The Fear & Greed index reads <span className="text-neon-green font-semibold">72 (Greed)</span>, indicating strong market confidence. Cortex AI recommends <span className="text-neon-cyan font-semibold">DCA accumulation</span> for spot positions and <span className="text-neon-amber font-semibold">caution on high-leverage futures</span> due to elevated volatility.
+                </p>
+              </div>
             </div>
-          ))}
+
+            {/* Sentiment Progress Bar */}
+            <div className="relative">
+              <div className="flex justify-between text-[10px] text-slate-500 mb-1.5">
+                <span>Bearish</span>
+                <span>Neutral</span>
+                <span className="text-neon-green font-semibold">Bullish 78%</span>
+              </div>
+              <div className="h-3 rounded-full bg-base-700 overflow-hidden relative">
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-neon-red via-neon-amber to-neon-green transition-all duration-1000 relative"
+                  style={{ width: '78%' }}
+                >
+                  <div className="absolute inset-0 rounded-full" style={{ boxShadow: '0 0 20px rgba(0, 255, 157, 0.5)' }} />
+                  <div className="absolute right-0 top-0 h-full w-8 bg-gradient-to-l from-white/30 to-transparent" />
+                </div>
+              </div>
+              <div className="flex justify-between mt-1 text-[10px] text-slate-600">
+                <span>0%</span>
+                <span>50%</span>
+                <span>100%</span>
+              </div>
+            </div>
+
+            {/* Sub-sentiment chips */}
+            <div className="flex flex-wrap gap-2 mt-4">
+              {[
+                { label: 'Fear & Greed', value: '72 — Greed', color: 'green' },
+                { label: 'Social Buzz', value: '+18% BTC', color: 'cyan' },
+                { label: 'On-Chain Flow', value: 'Net Inflow', color: 'green' },
+                { label: 'Volatility', value: 'Moderate', color: 'amber' },
+              ].map((chip) => (
+                <div key={chip.label} className={`px-3 py-1.5 rounded-lg text-xs ${accentMap[chip.color as keyof typeof accentMap].bg} ${accentMap[chip.color as keyof typeof accentMap].border} border`}>
+                  <span className="text-slate-400">{chip.label}: </span>
+                  <span className={accentMap[chip.color as keyof typeof accentMap].text + ' font-semibold'}>{chip.value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 

@@ -14,6 +14,7 @@ import AISmartBotView from '@/views/AISmartBotView';
 import TradingStatusView from '@/views/TradingStatusView';
 import SignalsView from '@/views/SignalsView';
 import CryptoView from '@/views/CryptoView';
+import CopyTradingView from '@/views/CopyTradingView';
 import TradeHistoryView from '@/views/TradeHistoryView';
 import WalletView from '@/views/WalletView';
 import ConnectBrokerView from '@/views/ConnectBrokerView';
@@ -33,6 +34,7 @@ const viewTitles: Record<ViewId, string> = {
   'trading-status': 'Trading Status',
   'signals': 'Signals',
   'crypto': 'Crypto',
+  'copy-trading': 'Copy Trading Marketplace',
   'trade-history': 'Trade History',
   'wallet': 'Wallet & Calculation',
   'connect-broker': 'Connect Your Broker',
@@ -58,6 +60,7 @@ function AppContent() {
       case 'trading-status': return <TradingStatusView />;
       case 'signals': return <SignalsView />;
       case 'crypto': return <CryptoView />;
+      case 'copy-trading': return <CopyTradingView />;
       case 'trade-history': return <TradeHistoryView />;
       case 'wallet': return <WalletView />;
       case 'connect-broker': return <ConnectBrokerView />;

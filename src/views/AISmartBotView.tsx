@@ -4,10 +4,13 @@ import {
   TrendingUp, TrendingDown, Check, Loader2, Target, Gauge,
   Activity, Clock, Flame, ArrowRightLeft, CircuitBoard,
   Copy, Grid3x3, PiggyBank, ArrowDownRight, ArrowUpRight, Power,
+  Bell, Send, MessageCircle, TestTube2,
 } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 import { coins } from '@/data/mockData';
 import { supabase } from '@/lib/supabase';
+import BacktestModal from '@/components/BacktestModal';
+import type { BotFactoryDraft } from '@/components/admin/BotFactoryModal';
 
 type MarketType = 'spot' | 'futures';
 type OrderType = 'market' | 'limit';
@@ -64,6 +67,15 @@ export default function AISmartBotView() {
   const [maxDailyLoss, setMaxDailyLoss] = useState(500);
   const [maxDailyProfit, setMaxDailyProfit] = useState(1000);
   const [cooldownMinutes, setCooldownMinutes] = useState(15);
+
+  // Notification & Alert Settings
+  const [telegramAlerts, setTelegramAlerts] = useState(false);
+  const [whatsappAlerts, setWhatsappAlerts] = useState(false);
+  const [telegramId, setTelegramId] = useState('');
+  const [whatsappNumber, setWhatsappNumber] = useState('');
+
+  // Backtest modal
+  const [showBacktest, setShowBacktest] = useState(false);
 
   const selectedCoinData = coins.find(c => c.symbol === selectedCoin) || coins[0];
 
@@ -504,6 +516,79 @@ export default function AISmartBotView() {
             </div>
           </Section>
 
+          {/* 7. Notification & Alert Settings */}
+          <Section icon={Bell} title="Notification & Alert Settings" badge="07">
+            <div className="space-y-3">
+              {/* Telegram Alerts */}
+              <div className={`p-4 rounded-xl border transition-all ${telegramAlerts ? 'bg-neon-cyan/5 border-neon-cyan/20' : 'bg-white/[0.02] border-white/[0.05]'}`}>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <div className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${telegramAlerts ? 'bg-neon-cyan/15' : 'bg-white/[0.05]'}`}>
+                      <Send className={`w-4.5 h-4.5 ${telegramAlerts ? 'text-neon-cyan' : 'text-slate-400'}`} />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-white">Telegram Alerts</p>
+                      <p className="text-[10px] text-slate-500">Receive instant trade notifications via Telegram</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setTelegramAlerts(!telegramAlerts)}
+                    className={`relative w-12 h-6 rounded-full transition-all duration-200 ${telegramAlerts ? 'bg-neon-cyan/30' : 'bg-white/[0.08]'}`}
+                  >
+                    <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full transition-all duration-200 ${telegramAlerts ? 'translate-x-6 bg-neon-cyan neon-glow-cyan' : 'bg-slate-500'}`} />
+                  </button>
+                </div>
+                {telegramAlerts && (
+                  <div className="animate-slide-up">
+                    <label className="text-xs text-slate-400 mb-1.5 block font-semibold">Telegram Chat ID</label>
+                    <input
+                      type="text"
+                      value={telegramId}
+                      onChange={(e) => setTelegramId(e.target.value)}
+                      placeholder="e.g. 123456789"
+                      className="w-full px-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.08] text-sm text-white font-mono focus:outline-none focus:border-neon-cyan/40 transition-colors"
+                    />
+                    <p className="text-[10px] text-slate-500 mt-1.5">Find your Chat ID by messaging @userinfobot on Telegram</p>
+                  </div>
+                )}
+              </div>
+
+              {/* WhatsApp Alerts */}
+              <div className={`p-4 rounded-xl border transition-all ${whatsappAlerts ? 'bg-neon-green/5 border-neon-green/20' : 'bg-white/[0.02] border-white/[0.05]'}`}>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <div className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${whatsappAlerts ? 'bg-neon-green/15' : 'bg-white/[0.05]'}`}>
+                      <MessageCircle className={`w-4.5 h-4.5 ${whatsappAlerts ? 'text-neon-green' : 'text-slate-400'}`} />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-white">WhatsApp Alerts</p>
+                      <p className="text-[10px] text-slate-500">Get trade alerts delivered to your WhatsApp number</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setWhatsappAlerts(!whatsappAlerts)}
+                    className={`relative w-12 h-6 rounded-full transition-all duration-200 ${whatsappAlerts ? 'bg-neon-green/30' : 'bg-white/[0.08]'}`}
+                  >
+                    <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full transition-all duration-200 ${whatsappAlerts ? 'translate-x-6 bg-neon-green neon-glow-green' : 'bg-slate-500'}`} />
+                  </button>
+                </div>
+                {whatsappAlerts && (
+                  <div className="animate-slide-up">
+                    <label className="text-xs text-slate-400 mb-1.5 block font-semibold">WhatsApp Number</label>
+                    <input
+                      type="tel"
+                      value={whatsappNumber}
+                      onChange={(e) => setWhatsappNumber(e.target.value)}
+                      placeholder="e.g. +91 98765 43210"
+                      className="w-full px-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.08] text-sm text-white font-mono focus:outline-none focus:border-neon-green/40 transition-colors"
+                    />
+                    <p className="text-[10px] text-slate-500 mt-1.5">Include country code (e.g. +91 for India)</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </Section>
+
           {/* 6. Daily Safety Limits */}
           <Section icon={Shield} title="Daily Safety Limits" badge="06">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
@@ -608,17 +693,34 @@ export default function AISmartBotView() {
               <SummaryRow label="Max Daily Profit" value={formatCurrency(maxDailyProfit)} accent="green" />
               <SummaryRow label="Cooldown" value={`${cooldownMinutes}m`} accent="amber" />
 
+              {/* Alerts */}
+              <SummaryGroup label="Alerts" />
+              <SummaryRow label="Telegram" value={telegramAlerts ? (telegramId || 'ON') : 'OFF'} accent={telegramAlerts ? 'cyan' : undefined} />
+              <SummaryRow label="WhatsApp" value={whatsappAlerts ? (whatsappNumber || 'ON') : 'OFF'} accent={whatsappAlerts ? 'green' : undefined} />
+
               <div className="h-px bg-white/[0.06] my-3" />
               <SummaryRow label="Trade Capital" value={formatCurrency(effectiveCapital)} />
               <SummaryRow label="Position Size" value={formatCurrency(positionSize)} accent="cyan" bold />
               <SummaryRow label="Coin Amount" value={`${coinAmount.toFixed(6)} ${selectedCoin}`} />
             </div>
 
-            {/* Launch button */}
+            {/* Backtest + Launch buttons */}
+            <button
+              onClick={() => setShowBacktest(true)}
+              disabled={effectiveCapital <= 0}
+              className={`mt-5 w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-bold text-sm transition-all duration-300 ${
+                effectiveCapital <= 0
+                  ? 'bg-white/[0.03] text-slate-500 border border-white/[0.06] cursor-not-allowed'
+                  : 'bg-neon-amber/15 text-neon-amber border border-neon-amber/40 hover:bg-neon-amber/25 neon-glow-amber hover:scale-[1.02]'
+              }`}
+            >
+              <TestTube2 className="w-4 h-4" /> Test Strategy (AI Backtest)
+            </button>
+
             <button
               onClick={handleLaunch}
               disabled={effectiveCapital <= 0 || launching}
-              className={`mt-5 w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-bold text-sm transition-all duration-300 ${
+              className={`mt-3 w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-bold text-sm transition-all duration-300 ${
                 launched
                   ? 'bg-neon-green/20 text-neon-green border border-neon-green/50 neon-glow-green'
                   : effectiveCapital <= 0 || launching
@@ -643,6 +745,28 @@ export default function AISmartBotView() {
           </div>
         </div>
       </div>
+
+      {showBacktest && (
+        <BacktestModal
+          draft={{
+            name: `Custom Cortex Bot — ${selectedCoin} ${botType.charAt(0).toUpperCase() + botType.slice(1)}`,
+            description: '',
+            bot_type: botType,
+            execution_mode: 'auto',
+            market_type: marketType,
+            strategies: [],
+            indicators: indicatorsEnabled ? [indicator] : [],
+            max_drawdown_pct: (maxDailyLoss / effectiveCapital) * 100,
+            default_tp_pct: tpSlMode === 'percentage' ? takeProfit : 5,
+            default_sl_pct: tpSlMode === 'percentage' ? stopLoss : 2,
+            tp_sl_ratio: rrRatio,
+            max_leverage: leverage,
+            risk_level: leverage > 30 ? 'High' : leverage > 10 ? 'Medium' : 'Low',
+            source_exchanges: [],
+          } as BotFactoryDraft}
+          onClose={() => setShowBacktest(false)}
+        />
+      )}
     </div>
   );
 }
